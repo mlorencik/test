@@ -7,7 +7,7 @@ import axios from "axios";
 
 function App() {
     const [results, setResults] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [lastPage, setLastPage] = useState(1);
     const listEndRef = useRef();
@@ -17,16 +17,14 @@ function App() {
             return;
         }
         setIsLoading(true);
-        fetch(`${API_URL}/images?page=${loadPage}`)
-            .then(response => response.json())
-            .then(data => {
-                setResults(refresh ? data.data : [...results, ...data.data]);
+        axios.get(`${API_URL}/images?page=${loadPage}`)
+            .then(response => {
+                setResults(refresh ? response.data.data : [...results, ...response.data.data]);
                 setIsLoading(false);
                 setPage(loadPage);
-                setLastPage(data.last_page);
+                setLastPage(response.data.last_page);
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
                 setIsLoading(false);
             });
     }
