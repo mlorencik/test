@@ -6,7 +6,6 @@ use App\Http\Requests\ImageRequest;
 use App\Models\Image;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -43,10 +42,9 @@ class ImageController extends Controller
             $width = $image->width();
             $height = $image->height();
             $exif = $image->exif() ? json_encode($image->exif()) : null;
-
             $newFileName = time();
 
-           $response = Http::get('https://api.open-meteo.com/v1/forecast', [
+            $response = Http::get('https://api.open-meteo.com/v1/forecast', [
                 'latitude' => 50.25841,
                 'longitude' => 19.02754,
                 'hourly' => 'temperature_2m',
@@ -72,9 +70,12 @@ class ImageController extends Controller
                     'temperature' => $response['hourly']['temperature_2m'][$temperatureKey],
                     'exif' => $exif,
                 ]);
+
+                return response()->json($imageModel, 201);
+            } else {
+                throw new \Exception('Failed to fetch weather data');
             }
 
-            return response()->json($imageModel, 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

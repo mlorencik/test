@@ -1,7 +1,7 @@
 import Layout from "./layout/Layout";
 import FileUpload from "./parts/FileUpload";
 import List from "./parts/List";
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {API_URL} from "./constants";
 import axios from "axios";
 
@@ -12,7 +12,7 @@ function App() {
     const [lastPage, setLastPage] = useState(1);
     const listEndRef = useRef();
 
-    const loadMoreItems = (loadPage, refresh) => {
+    const loadMoreItems = useCallback((loadPage, refresh = false) => {
         if (lastPage <= page && !refresh) {
             return;
         }
@@ -27,16 +27,7 @@ function App() {
             .catch(error => {
                 setIsLoading(false);
             });
-    }
-
-    const handleScroll = () => {
-        if (isLoading || results.length === 0) {
-            return
-        }
-        if (listEndRef.current && listEndRef.current.getBoundingClientRect().bottom <= window.innerHeight) {
-            loadMoreItems(page + 1);
-        }
-    }
+    }, [lastPage, page, results]);
 
     const handleAdd = (item) => {
         setResults([item, ...results]);
@@ -48,6 +39,14 @@ function App() {
         })
     }
 
+    const handleScroll = () => {
+        if (isLoading || results.length === 0) {
+            return;
+        }
+        if (listEndRef.current && listEndRef.current.getBoundingClientRect().bottom <= window.innerHeight) {
+            loadMoreItems(page + 1);
+        }
+    }
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => {
