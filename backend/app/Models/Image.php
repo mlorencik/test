@@ -5,6 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Image
+ *
+ * @property int $id
+ * @property string $filename
+ * @property string $extension
+ * @property int $size
+ * @property int $width
+ * @property int $height
+ * @property string $name
+ * @property string $email
+ * @property float $temperature
+ * @property array $exif
+ *
+ * @package App\Models
+ */
 class Image extends Model
 {
     use HasFactory;
@@ -40,7 +56,6 @@ class Image extends Model
      */
     protected $casts = [
         'exif' => 'array',
-        'iptc' => 'array',
         'temperature' => 'float',
     ];
 }
