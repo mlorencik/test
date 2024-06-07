@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react';
 import axios from 'axios';
 import {API_URL} from "../constants";
+import PropTypes from "prop-types";
 
 const FileUpload = ({handleAdd}) => {
     const fileInputRef = useRef(null);
@@ -127,6 +128,7 @@ const FileUpload = ({handleAdd}) => {
             });
             handleAdd(response.data);
         }).catch(error => {
+            console.error("Error:", error);
             setForm({
                 ...form,
                 errors: error?.response?.data?.errors || {global: 'Wystąpił błąd, spróbuj później'},
@@ -199,6 +201,10 @@ const FileUpload = ({handleAdd}) => {
             )}
         </div>
     );
+};
+
+FileUpload.propTypes = {
+    handleAdd: PropTypes.func.isRequired,
 };
 
 export default FileUpload;

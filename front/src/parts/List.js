@@ -1,6 +1,6 @@
 import React from 'react';
-import {API_URL, IMAGES_URL} from "../constants";
 import ListItem from "./ListItem";
+import PropTypes from "prop-types";
 
 const List = ({list, isLoading, handleDelete}) => {
     return (
@@ -19,6 +19,12 @@ const List = ({list, isLoading, handleDelete}) => {
             )}
         </div>
     );
+};
+
+List.propTypes = {
+    list: PropTypes.array.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    handleDelete: PropTypes.func.isRequired
 };
 
 export default List;

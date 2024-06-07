@@ -26,6 +26,7 @@ function App() {
             })
             .catch(error => {
                 setIsLoading(false);
+                console.error("Error:", error);
             });
     }, [lastPage, page, results]);
 
@@ -34,9 +35,13 @@ function App() {
     }
 
     const handleDelete = async (id) => {
-        await axios.delete(`${API_URL}/images/${id}`).then(response => {
-            setResults(results.filter(item => item.id !== id));
-        })
+        try {
+            await axios.delete(`${API_URL}/images/${id}`).then(response => {
+                setResults(results.filter(item => item.id !== id));
+            })
+        } catch (error) {
+            console.error("Error:", error);
+        }
     }
 
     const handleScroll = () => {
@@ -47,6 +52,7 @@ function App() {
             loadMoreItems(page + 1);
         }
     }
+
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => {
@@ -61,7 +67,11 @@ function App() {
     return (
         <Layout>
             <FileUpload handleAdd={handleAdd}/>
-            <List list={results} isLoading={isLoading} handleDelete={handleDelete}/>
+            <List
+                list={results}
+                isLoading={isLoading}
+                handleDelete={handleDelete}
+            />
             <div ref={listEndRef} style={{height: '10px'}}/>
         </Layout>
     );
